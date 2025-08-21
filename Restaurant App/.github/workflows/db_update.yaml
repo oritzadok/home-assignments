@@ -1,0 +1,21 @@
+name: Update database
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  update-db:
+    runs-on: ubuntu-latest
+    steps:
+      # checkout the repo
+      - name: 'Checkout Github Action'
+        uses: actions/checkout@master
+    
+      - uses: azure/sql-action@v2.3
+        with:        
+          # Make sure to define the secret
+          connection-string: ${{ secrets.AZURE_SQL_CONNECTION_STRING }}
+          path: './sql/Restaurant.sql'
+          action: 'publish'
