@@ -1,0 +1,256 @@
+[cloudshell-user@ip-xxx ~]$ terraform apply --auto-approve
+
+Terraform used the selected providers to generate the following execution plan. Resource actions are indicated with the following symbols:
+  + create
+ <= read (data resources)
+
+Terraform will perform the following actions:
+
+  # data.aws_iam_policy_document.iam_policy will be read during apply
+  # (config refers to values not yet known)
+ <= data "aws_iam_policy_document" "iam_policy" {
+      + id   = (known after apply)
+      + json = (known after apply)
+
+      + statement {
+          + actions   = [
+              + "s3:GetObject",
+            ]
+          + effect    = "Allow"
+          + resources = [
+              + (known after apply),
+            ]
+          + sid       = "PublicReadGetObject"
+
+          + principals {
+              + identifiers = [
+                  + "*",
+                ]
+              + type        = "*"
+            }
+        }
+    }
+
+  # aws_cloudfront_distribution.distribution will be created
+  + resource "aws_cloudfront_distribution" "distribution" {
+      + arn                            = (known after apply)
+      + caller_reference               = (known after apply)
+      + domain_name                    = (known after apply)
+      + enabled                        = true
+      + etag                           = (known after apply)
+      + hosted_zone_id                 = (known after apply)
+      + http_version                   = "http2"
+      + id                             = (known after apply)
+      + in_progress_validation_batches = (known after apply)
+      + is_ipv6_enabled                = true
+      + last_modified_time             = (known after apply)
+      + price_class                    = "PriceClass_All"
+      + retain_on_delete               = false
+      + status                         = (known after apply)
+      + tags_all                       = (known after apply)
+      + trusted_key_groups             = (known after apply)
+      + trusted_signers                = (known after apply)
+      + wait_for_deployment            = true
+
+      + default_cache_behavior {
+          + allowed_methods        = [
+              + "GET",
+              + "HEAD",
+            ]
+          + cached_methods         = [
+              + "GET",
+              + "HEAD",
+            ]
+          + compress               = false
+          + default_ttl            = (known after apply)
+          + max_ttl                = (known after apply)
+          + min_ttl                = 0
+          + target_origin_id       = (known after apply)
+          + trusted_key_groups     = (known after apply)
+          + trusted_signers        = (known after apply)
+          + viewer_protocol_policy = "allow-all"
+
+          + forwarded_values {
+              + headers                 = (known after apply)
+              + query_string            = false
+              + query_string_cache_keys = (known after apply)
+
+              + cookies {
+                  + forward           = "none"
+                  + whitelisted_names = (known after apply)
+                }
+            }
+        }
+
+      + origin {
+          + connection_attempts      = 3
+          + connection_timeout       = 10
+          + domain_name              = (known after apply)
+          + origin_id                = (known after apply)
+            # (2 unchanged attributes hidden)
+
+          + custom_origin_config {
+              + http_port                = 80
+              + https_port               = 443
+              + origin_keepalive_timeout = 5
+              + origin_protocol_policy   = "http-only"
+              + origin_read_timeout      = 30
+              + origin_ssl_protocols     = [
+                  + "SSLv3",
+                  + "TLSv1",
+                  + "TLSv1.1",
+                  + "TLSv1.2",
+                ]
+            }
+        }
+
+      + restrictions {
+          + geo_restriction {
+              + locations        = (known after apply)
+              + restriction_type = "none"
+            }
+        }
+
+      + viewer_certificate {
+          + cloudfront_default_certificate = true
+          + minimum_protocol_version       = "TLSv1"
+        }
+    }
+
+  # aws_s3_bucket.bucket will be created
+  + resource "aws_s3_bucket" "bucket" {
+      + acceleration_status         = (known after apply)
+      + acl                         = (known after apply)
+      + arn                         = (known after apply)
+      + bucket                      = "ori-static-website"
+      + bucket_domain_name          = (known after apply)
+      + bucket_prefix               = (known after apply)
+      + bucket_regional_domain_name = (known after apply)
+      + force_destroy               = false
+      + hosted_zone_id              = (known after apply)
+      + id                          = (known after apply)
+      + object_lock_enabled         = (known after apply)
+      + policy                      = (known after apply)
+      + region                      = (known after apply)
+      + request_payer               = (known after apply)
+      + tags_all                    = (known after apply)
+      + website_domain              = (known after apply)
+      + website_endpoint            = (known after apply)
+
+      + cors_rule (known after apply)
+
+      + grant (known after apply)
+
+      + lifecycle_rule (known after apply)
+
+      + logging (known after apply)
+
+      + object_lock_configuration (known after apply)
+
+      + replication_configuration (known after apply)
+
+      + server_side_encryption_configuration (known after apply)
+
+      + versioning (known after apply)
+
+      + website (known after apply)
+    }
+
+  # aws_s3_bucket_policy.bucket_policy will be created
+  + resource "aws_s3_bucket_policy" "bucket_policy" {
+      + bucket = (known after apply)
+      + id     = (known after apply)
+      + policy = (known after apply)
+    }
+
+  # aws_s3_bucket_public_access_block.bucket_public_access will be created
+  + resource "aws_s3_bucket_public_access_block" "bucket_public_access" {
+      + block_public_acls       = false
+      + block_public_policy     = false
+      + bucket                  = (known after apply)
+      + id                      = (known after apply)
+      + ignore_public_acls      = false
+      + restrict_public_buckets = false
+    }
+
+  # aws_s3_bucket_website_configuration.bucket_website_conf will be created
+  + resource "aws_s3_bucket_website_configuration" "bucket_website_conf" {
+      + bucket           = (known after apply)
+      + id               = (known after apply)
+      + routing_rules    = (known after apply)
+      + website_domain   = (known after apply)
+      + website_endpoint = (known after apply)
+
+      + index_document {
+          + suffix = "index.html"
+        }
+
+      + routing_rule (known after apply)
+    }
+
+  # aws_s3_object.index_file will be created
+  + resource "aws_s3_object" "index_file" {
+      + acl                    = "private"
+      + bucket                 = (known after apply)
+      + bucket_key_enabled     = (known after apply)
+      + content_type           = "text/html"
+      + etag                   = (known after apply)
+      + force_destroy          = false
+      + id                     = (known after apply)
+      + key                    = "index.html"
+      + kms_key_id             = (known after apply)
+      + server_side_encryption = (known after apply)
+      + source                 = "index.html"
+      + storage_class          = (known after apply)
+      + tags_all               = (known after apply)
+      + version_id             = (known after apply)
+    }
+
+Plan: 6 to add, 0 to change, 0 to destroy.
+
+Changes to Outputs:
+  + distribution_domain_name = (known after apply)
+aws_s3_bucket.bucket: Creating...
+aws_s3_bucket.bucket: Creation complete after 1s [id=ori-static-website]
+data.aws_iam_policy_document.iam_policy: Reading...
+aws_s3_bucket_public_access_block.bucket_public_access: Creating...
+aws_s3_object.index_file: Creating...
+data.aws_iam_policy_document.iam_policy: Read complete after 0s [id=4033350295]
+aws_s3_bucket_website_configuration.bucket_website_conf: Creating...
+aws_s3_object.index_file: Creation complete after 0s [id=index.html]
+aws_s3_bucket_website_configuration.bucket_website_conf: Creation complete after 0s [id=ori-static-website]
+aws_cloudfront_distribution.distribution: Creating...
+aws_s3_bucket_public_access_block.bucket_public_access: Creation complete after 0s [id=ori-static-website]
+aws_s3_bucket_policy.bucket_policy: Creating...
+aws_s3_bucket_policy.bucket_policy: Creation complete after 0s [id=ori-static-website]
+aws_cloudfront_distribution.distribution: Still creating... [10s elapsed]
+aws_cloudfront_distribution.distribution: Still creating... [20s elapsed]
+aws_cloudfront_distribution.distribution: Still creating... [30s elapsed]
+aws_cloudfront_distribution.distribution: Still creating... [40s elapsed]
+aws_cloudfront_distribution.distribution: Still creating... [50s elapsed]
+aws_cloudfront_distribution.distribution: Still creating... [1m0s elapsed]
+aws_cloudfront_distribution.distribution: Still creating... [1m10s elapsed]
+aws_cloudfront_distribution.distribution: Still creating... [1m20s elapsed]
+aws_cloudfront_distribution.distribution: Still creating... [1m30s elapsed]
+aws_cloudfront_distribution.distribution: Still creating... [1m40s elapsed]
+aws_cloudfront_distribution.distribution: Still creating... [1m50s elapsed]
+aws_cloudfront_distribution.distribution: Still creating... [2m0s elapsed]
+aws_cloudfront_distribution.distribution: Still creating... [2m10s elapsed]
+aws_cloudfront_distribution.distribution: Still creating... [2m20s elapsed]
+aws_cloudfront_distribution.distribution: Still creating... [2m30s elapsed]
+aws_cloudfront_distribution.distribution: Still creating... [2m40s elapsed]
+aws_cloudfront_distribution.distribution: Still creating... [2m50s elapsed]
+aws_cloudfront_distribution.distribution: Still creating... [3m0s elapsed]
+aws_cloudfront_distribution.distribution: Still creating... [3m10s elapsed]
+aws_cloudfront_distribution.distribution: Still creating... [3m20s elapsed]
+aws_cloudfront_distribution.distribution: Still creating... [3m30s elapsed]
+aws_cloudfront_distribution.distribution: Still creating... [3m40s elapsed]
+aws_cloudfront_distribution.distribution: Still creating... [3m50s elapsed]
+aws_cloudfront_distribution.distribution: Still creating... [4m0s elapsed]
+aws_cloudfront_distribution.distribution: Creation complete after 4m8s [id=EPNT9F55FHNBH]
+
+Apply complete! Resources: 6 added, 0 changed, 0 destroyed.
+
+Outputs:
+
+distribution_domain_name = "d2ladi4dzuori8.cloudfront.net"
