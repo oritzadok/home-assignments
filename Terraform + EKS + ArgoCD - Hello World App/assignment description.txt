@@ -1,0 +1,3 @@
+Create an AWS EKS cluster using Terraform.
+Deploy a Hello World web app on the cluster using ArgoCD.
+The web page should display the string "שלום עולם".

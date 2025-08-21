@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+ name: nginx-config
+ namespace: my-app
+data:
+ index.html: |
+   <html>
+   <head>
+   <meta charset="UTF-8">
+   <title>Hello World</title>
+   </head>
+   <body>
+   <h1>שלום עולם</h1>
+   </body>
+   </html>
