@@ -1,0 +1,9 @@
+#!/bin/bash
+sudo su
+
+mkdir -p /efs
+
+yum install amazon-efs-utils -y
+
+echo "${file_system_id}:/ /efs efs _netdev,noresvport,tls 0 0" >> /etc/fstab
+mount -av

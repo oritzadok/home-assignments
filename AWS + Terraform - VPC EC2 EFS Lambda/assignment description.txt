@@ -1,0 +1,10 @@
+- Create a new VPC, 16 CIDR
+- Create 2 subnets, 32766 addresses each, in zone 1a & 1b
+- Create a t2.micro EC2 instance with Amazon Linux OS, in one of the subnets
+- Should be able to connect to the instance in port 22 (can open the security groups to all addresses 0.0.0.0/0 for exercise purposes)
+- Create an EFS file system in same subnet
+- Create a mount to the file system inside the instance, named "/efs". Should be able to execute "cd" & "ls" to the mount point successfully.
+- Create a Lambda function in same subnet. Can choose any langunge you want. The function should be able to download this file successfully https://api.apis.guru/v2/providers.json , and put it in the root folder of the efs.
+- Should be able to read the file from within the instance in the path /efs/providers.json
+- Bonus: write everything as Terraform
+- Please work only in Ireland region
