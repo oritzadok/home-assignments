@@ -1,0 +1,12 @@
+# Default values for hello-app.
+
+replicaCount: 1
+
+image:
+  repository: ""
+  tag: ""
+
+autoscaling:
+  minReplicas: 1
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 50

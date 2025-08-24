@@ -1,0 +1,83 @@
+name: Build and Deploy to EKS
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+    - 'app/**'
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set short Git commit SHA
+        id: commit
+        uses: prompt/actions-commit-hash@v2
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        # Better to use 'IAM Role to assume' approach
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{vars.AWS_REGION}}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+        with:
+          mask-password: 'true'
+
+      - name: Build Docker image and push to Amazon ECR
+        working-directory: ./app
+        env:
+          ECR_REPOSITORY_URI: ${{ secrets.ECR_REPOSITORY_URI }}
+          IMAGE_TAG: ${{ steps.commit.outputs.short }}
+        run: |
+          BUILD_TIMESTAMP=$(date '+%F_%H:%M:%S')
+          docker build \
+            -t ${ECR_REPOSITORY_URI}:${IMAGE_TAG} \
+            --build-arg VERSION="${IMAGE_TAG}" \
+            --build-arg BUILD_TIMESTAMP="${BUILD_TIMESTAMP}" \
+            .
+
+          docker push ${ECR_REPOSITORY_URI}:${IMAGE_TAG}
+
+    outputs:
+      image_tag: ${{ steps.commit.outputs.short }}
+
+
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+    
+      - name: Deploy Helm
+        uses: bitovi/github-actions-deploy-eks-helm@v1.2.12
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{vars.AWS_REGION}}
+          cluster-name: ${{ vars.EKS_CLUSTER }}
+          namespace: hello-app
+          name: hello-app
+          # In production - should push to and pull from a Helm repo, such as AWS ECR/OCI
+          #chart-repository: 
+          values: |
+            image.repository=${{ secrets.ECR_REPOSITORY_URI }},
+            image.tag=${{ needs.build.outputs.image_tag }}
+          atomic: true
+          timeout: 60s
+          helm-extra-args: --debug
+
